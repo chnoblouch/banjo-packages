@@ -1,0 +1,8 @@
+{
+    "libraries": ["glfw3"],
+	"targets": {
+		"x86_64-windows-msvc": {
+			"libraries": ["user32", "gdi32", "shell32"]
+		}
+	}
+}

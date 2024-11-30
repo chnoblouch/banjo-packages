@@ -1,0 +1,6 @@
+/packages/glfw/lib/
+/packages/glfw/src/
+
+*-upstream/
+
+__pycache__/
