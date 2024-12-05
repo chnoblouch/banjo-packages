@@ -36,7 +36,7 @@ jobs:
       - name: Upload GLFW build
         uses: actions/upload-artifact@v4
         with:
-          name: glfw-x86_64-windows
+          name: glfw-x86_64-windows-msvc
           path: .\packages\glfw
 
   build-linux:
@@ -70,7 +70,7 @@ jobs:
       - name: Upload GLFW build
         uses: actions/upload-artifact@v4
         with:
-          name: glfw-x86_64-linux
+          name: glfw-x86_64-linux-gnu
           path: ./packages/glfw
 
   build-macos:
@@ -106,4 +106,29 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: glfw-aarch64-macos
+          path: ./packages/glfw
+
+  merge:
+    runs-on: ubuntu-24.04
+
+    needs:
+      - build-windows
+      - build-linux
+      - build-macos
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download builds
+        uses: actions/download-artifact@v4
+        with:
+          path: ./packages
+      
+      - name: Merge packages
+        run: python ./merge_target_variants.py glfw
+
+      - name: Upload merged package
+        uses: actions/upload-artifact@v4
+        with:
+          name: glfw
           path: ./packages/glfw
