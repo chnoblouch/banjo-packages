@@ -6,6 +6,7 @@ on:
 jobs:
   build-windows:
     runs-on: windows-2022
+
     steps:
       - uses: actions/checkout@v4
       - uses: ilammy/msvc-dev-cmd@v1
@@ -40,6 +41,7 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-24.04
+
     steps:
       - uses: actions/checkout@v4
 
@@ -69,4 +71,39 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: glfw-x86_64-linux
+          path: ./packages/glfw
+
+  build-macos:
+    runs-on: macos-14
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - name: Install Ninja
+        run: brew install ninja
+
+      - name: Install libclang
+        run: pip install libclang
+
+      - name: Download Banjo toolchain
+        run: curl -OL https://github.com/chnoblouch/banjo-lang/releases/latest/download/banjo-aarch64-macos.zip
+
+      - name: Extract Banjo toolchain
+        run: unzip banjo-aarch64-macos.zip -d $HOME
+      
+      - name: Add Banjo toolchain to PATH
+        run: echo "$HOME/banjo-aarch64-macos/bin" >> $GITHUB_PATH
+
+      - name: Build GLFW
+        run: python build_glfw.py
+        working-directory: ./scripts
+
+      - name: Upload GLFW build
+        uses: actions/upload-artifact@v4
+        with:
+          name: glfw-aarch64-macos
           path: ./packages/glfw
