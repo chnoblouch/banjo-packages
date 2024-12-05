@@ -17,5 +17,8 @@ if __name__ == "__main__":
         src_dir = Path("packages", f"{name}-{target}")
         dst_dir = Path("packages", name)
 
-        shutil.copytree(src_dir / "lib", dst_dir / "lib", dirs_exist_ok=True)
-        shutil.copytree(src_dir / "src", dst_dir / "src", dirs_exist_ok=True)
+        if (src_dir / "src").exists():
+            shutil.copytree(src_dir / "src", dst_dir / "src", dirs_exist_ok=True)
+
+        if (src_dir / "lib").exists():
+            shutil.copytree(src_dir / "lib", dst_dir / "lib", dirs_exist_ok=True)
