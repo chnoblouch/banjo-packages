@@ -54,11 +54,13 @@ def is_macos():
     return host_target()[1] == "macos"
 
 
-def git_clone(name, url):
+def git_clone(name, url, tag):
     path = Path(package_name, name)
 
     if not path.is_dir():
         subprocess.run(["git", "clone", url, str(path)])
+
+    subprocess.run(["git", "-C", str(path), "checkout", tag])
 
 
 def cmake_build(directory, configure_args=[]):

@@ -1,3 +1,10 @@
 {
-	"libraries": ["vulkan"]
+	"targets": {
+        "x86_64-windows-msvc": {
+            "libraries": ["vulkan-1"]
+        },
+        "x86_64-linux-gnu": {
+            "libraries": ["vulkan"]
+        }
+    }
 }
