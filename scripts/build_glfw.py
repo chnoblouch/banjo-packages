@@ -10,5 +10,8 @@ if __name__ == "__main__":
     building.git_clone("glfw", "https://github.com/glfw/glfw.git")
     
     install_path = building.cmake_build("glfw")
-    building.copy_libraries(install_path / "lib", ["glfw3"])
+
+    library_name = "glfw3.lib" if building.is_windows() else "libglfw3.a"
+    building.copy_libraries(install_path / "lib", [library_name])
+    
     building.generate_bindings(install_path / "include", "glfw")

@@ -20,5 +20,7 @@ if __name__ == "__main__":
         f"-DVULKAN_HEADERS_INSTALL_DIR={headers_install_dir}/share/cmake/VulkanHeaders"
     ])
     
-    building.copy_libraries(install_dir / "lib", ["vulkan-1"])
+    library_name = "vulkan-1.lib" if building.is_windows() else "libvulkan.so.1.4.303" 
+    building.copy_libraries(install_dir / "lib", [library_name])
+    
     building.generate_bindings(headers_install_dir / "include", "vulkan")

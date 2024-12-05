@@ -90,8 +90,7 @@ def copy_libraries(lib_path, libraries):
     package_lib_path.mkdir(parents=True, exist_ok=True) 
 
     for library in libraries:
-        file_name = f"{library}.lib" if target_os == "windows" else f"lib{library}.a"
-        shutil.copy(lib_path / file_name, package_lib_path / file_name)
+        shutil.copy(lib_path / library, package_lib_path / library)
 
 
 def generate_bindings(include_path, mod_name):
