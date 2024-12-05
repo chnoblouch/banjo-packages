@@ -1,6 +1,6 @@
 /packages/glfw/lib/
 /packages/glfw/src/
-
-*-upstream/
+/packages/vulkan/lib/
+/packages/vulkan/src/
 
 __pycache__/

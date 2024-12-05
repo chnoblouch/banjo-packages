@@ -5,11 +5,7 @@ import os
 import platform
 
 
-def git_clone(name, url):
-    path = Path(name, f"{name}-upstream")
-
-    if not path.is_dir():
-        subprocess.run(["git", "clone", url, str(path)])
+package_name = None
 
 
 def host_target():
@@ -36,22 +32,46 @@ def host_target():
     return (target_arch, target_os, target_env)
 
 
-def cmake_build(name, args=[], libraries=[], target=host_target()):
-    target_arch, target_os, target_env = target
+def target_string(target=host_target()):
+    arch, os, env = target
 
-    target_string = f"{target_arch}-{target_os}"
-    if target_env:
-        target_string += f"-{target_env}"
+    string = f"{arch}-{os}"
+    if env:
+        string += f"-{env}"
+    
+    return string
 
-    path = Path(name, f"{name}-upstream")
-    build_path = Path(path, "build", target_string)
-    install_path = Path(path, "install", target_string)
+
+def is_windows():
+    return host_target()[1] == "windows"
+
+
+def is_linux():
+    return host_target()[1] == "linux"
+
+
+def is_macos():
+    return host_target()[1] == "macos"
+
+
+def git_clone(name, url):
+    path = Path(package_name, name)
+
+    if not path.is_dir():
+        subprocess.run(["git", "clone", url, str(path)])
+
+
+def cmake_build(directory, configure_args=[]):
+    path = Path(package_name, directory)
+    build_path = Path(path, "build", target_string())
+    install_path = Path(path, "install", target_string())
 
     subprocess.run([
         "cmake", str(path),
         f"-B{build_path}",
         f"-GNinja",
-        f"-DCMAKE_INSTALL_PREFIX={install_path}"
+        f"-DCMAKE_INSTALL_PREFIX={install_path}",
+        *configure_args,
     ])
 
     subprocess.run([
@@ -60,18 +80,23 @@ def cmake_build(name, args=[], libraries=[], target=host_target()):
         "--target", "install",
     ])
 
-    package_lib_path = Path(os.pardir, "packages", name, "lib", target_string)
+    return install_path.absolute()
+
+
+def copy_libraries(lib_path, libraries):
+    _, target_os, _ = host_target()
+
+    package_lib_path = Path(os.pardir, "packages", package_name, "lib", target_string())
     package_lib_path.mkdir(parents=True, exist_ok=True) 
 
     for library in libraries:
         file_name = f"{library}.lib" if target_os == "windows" else f"lib{library}.a"
-        shutil.copy(install_path / "lib" / file_name, package_lib_path / file_name)
+        shutil.copy(lib_path / file_name, package_lib_path / file_name)
 
 
-def generate_bindings(name, mod_name, include_dir):
-    c_api_path = Path(name, f"{name}_api.c")
-    generator_path = Path(name, f"{name}_generator.py")
-    include_path = Path(name, f"{name}-upstream", include_dir)
+def generate_bindings(include_path, mod_name):
+    c_api_path = Path(package_name, f"{package_name}_api.c")
+    generator_path = Path(package_name, f"{package_name}_generator.py")
 
     subprocess.run([
         "banjo", "bindgen", c_api_path,
@@ -79,7 +104,7 @@ def generate_bindings(name, mod_name, include_dir):
         "--generator", generator_path,
     ])
 
-    src_path = Path(os.pardir, "packages", name, "src")
+    src_path = Path(os.pardir, "packages", package_name, "src")
     src_path.mkdir(exist_ok=True)
 
     mod_path = src_path / f"{mod_name}.bnj"
