@@ -79,5 +79,8 @@ def generate_bindings(name, mod_name, include_dir):
         "--generator", generator_path,
     ])
 
-    mod_path = Path(os.pardir, "packages", name, "src", f"{mod_name}.bnj")
+    src_path = Path(os.pardir, "packages", name, "src")
+    src_path.mkdir(exist_ok=True)
+
+    mod_path = src_path / f"{mod_name}.bnj"
     shutil.move("bindings.bnj", mod_path)
