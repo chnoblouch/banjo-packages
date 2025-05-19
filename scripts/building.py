@@ -62,11 +62,16 @@ def get_package_path():
     return Path(os.pardir, "packages", package_name)
 
 
-def git_clone(name, url, tag):
+def git_clone(name, url, tag, recursive=False):
     path = Path(package_name, name)
 
     if not path.is_dir():
-        subprocess.run(["git", "clone", url, str(path)])
+        command = ["git", "clone", url, str(path)]
+
+        if recursive:
+            command.append("--recursive")
+
+        subprocess.run(command)
 
     subprocess.run(["git", "-C", str(path), "checkout", tag])
 
@@ -112,11 +117,17 @@ def generate_bindings(include_path, mod_name):
     c_api_path = Path(package_name, f"{package_name}_api.c")
     generator_path = Path(package_name, f"{package_name}_generator.py")
 
-    subprocess.run([
+    command = [
         "banjo", "bindgen", c_api_path,
-        f"-I{include_path}",
         "--generator", generator_path,
-    ])
+    ]
+
+    if type(include_path) is str:
+        command.append(f"-I{include_path}")
+    elif type(include_path) is list:
+        command.extend(f"-I{path}" for path in include_path)
+
+    subprocess.run(command)
 
     src_path = Path(os.pardir, "packages", package_name, "src")
     src_path.mkdir(exist_ok=True)

@@ -1,3 +1,13 @@
 {
-    "libraries": ["SDL3"]
+    "targets": {
+        "x86_64-windows-msvc": {
+            "libraries": ["SDL3-static", "SDL3_image-static", "SDL3_ttf-static"]
+        },
+        "x86_64-linux-gnu": {
+            "libraries": ["SDL3", "SDL3_image", "SDL3_ttf"]
+        },
+        "aarch64-macos": {
+            "libraries": ["SDL3", "SDL3_image", "SDL3_ttf"]
+        }
+    }
 }
