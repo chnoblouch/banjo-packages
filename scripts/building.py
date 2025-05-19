@@ -54,6 +54,14 @@ def is_macos():
     return host_target()[1] == "macos"
 
 
+def get_path(directory):
+    return Path(package_name, directory)
+
+
+def get_package_path():
+    return Path(os.pardir, "packages", package_name)
+
+
 def git_clone(name, url, tag):
     path = Path(package_name, name)
 
@@ -93,6 +101,11 @@ def copy_libraries(lib_path, libraries):
 
     for library in libraries:
         shutil.copy(lib_path / library, package_lib_path / library)
+
+
+def copy_license(license_path):
+    package_path = Path(os.pardir, "packages", package_name)
+    shutil.copy(license_path, package_path / "LICENSE.txt")
 
 
 def generate_bindings(include_path, mod_name):

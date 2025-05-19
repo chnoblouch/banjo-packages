@@ -2,5 +2,8 @@
 /packages/glfw/src/
 /packages/vulkan/lib/
 /packages/vulkan/src/
+/packages/sdl/lib/
+/packages/sdl/src/
+/packages/sdl/LICENSE.txt
 
 __pycache__/
