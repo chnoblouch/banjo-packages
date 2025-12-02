@@ -37,19 +37,19 @@ if __name__ == "__main__":
     building.git_clone("SDL_ttf", "https://github.com/libsdl-org/SDL_ttf.git", SDL_TTF_VERSION, recursive=True)
     # building.git_clone("SDL_net", "https://github.com/libsdl-org/SDL_net.git", SDL_NET_VERSION)
 
-    cmake_args = ["-DBUILD_SHARED_LIBS=OFF"]
+    cmake_args = ["-DBUILD_SHARED_LIBS=OFF", "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"]
     sdl_install_path = building.cmake_build("SDL", cmake_args)
     library_name = f"SDL3-static.lib" if building.is_windows() else f"libSDL3.a"
     building.copy_libraries(sdl_install_path / "lib", [library_name])
 
     sdl_cmake_path = sdl_install_path / "cmake" if building.is_windows() else sdl_install_path / "lib" / "cmake" / "SDL3"
 
-    cmake_args = ["-DBUILD_SHARED_LIBS=OFF", f"-DSDL3_DIR={sdl_cmake_path}", "-DSDLIMAGE_VENDORED=OFF"]
+    cmake_args = ["-DBUILD_SHARED_LIBS=OFF", "-DCMAKE_POSITION_INDEPENDENT_CODE=ON", f"-DSDL3_DIR={sdl_cmake_path}", "-DSDLIMAGE_VENDORED=OFF"]
     sdl_image_install_path = building.cmake_build("SDL_image", cmake_args)
     library_name = f"SDL3_image-static.lib" if building.is_windows() else f"libSDL3_image.a"
     building.copy_libraries(sdl_image_install_path / "lib", [library_name])
 
-    cmake_args = ["-DBUILD_SHARED_LIBS=OFF", f"-DSDL3_DIR={sdl_cmake_path}", "-DSDLTTF_VENDORED=ON"]
+    cmake_args = ["-DBUILD_SHARED_LIBS=OFF", "-DCMAKE_POSITION_INDEPENDENT_CODE=ON", f"-DSDL3_DIR={sdl_cmake_path}", "-DSDLTTF_VENDORED=ON"]
     sdl_ttf_install_path = building.cmake_build("SDL_ttf", cmake_args)
     library_name = f"SDL3_ttf-static.lib" if building.is_windows() else f"libSDL3_ttf.a"
     building.copy_libraries(sdl_ttf_install_path / "lib", [library_name])
