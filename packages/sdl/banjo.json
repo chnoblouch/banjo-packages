@@ -22,10 +22,39 @@
             ]
         },
         "x86_64-linux-gnu": {
-            "libraries": ["SDL3", "SDL3_image", "SDL3_ttf"]
+            "libraries": [
+                "SDL3",
+                "SDL3_image",
+                "SDL3_ttf"
+            ]
         },
         "aarch64-macos": {
-            "libraries": ["SDL3", "SDL3_image", "SDL3_ttf"]
+            "libraries": [
+                "SDL3",
+                "SDL3_image",
+                "SDL3_ttf"
+            ],
+            "macos.frameworks": [
+                "CoreMedia",
+                "CoreVideo",
+                "Cocoa",
+                "UniformTypeIdentifiers",
+                "IOKit",
+                "ForceFeedback",
+                "Carbon",
+                "CoreAudio",
+                "AudioToolbox",
+                "AVFoundation",
+                "Foundation",
+                "GameController",
+                "Metal",
+                "QuartzCore",
+                "CoreHaptics",
+                "AppKit",
+                "CoreFoundation",
+                "CoreGraphics",
+                "CoreServices"
+            ]
         }
     }
 }
