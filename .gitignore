@@ -5,5 +5,8 @@
 /packages/sdl/lib/
 /packages/sdl/src/
 /packages/sdl/LICENSE.txt
+/packages/joltc/lib/
+/packages/joltc/src/
+/packages/joltc/licenses/
 
 __pycache__/

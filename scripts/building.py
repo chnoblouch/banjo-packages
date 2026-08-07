@@ -62,7 +62,7 @@ def get_package_path():
     return Path(os.pardir, "packages", package_name)
 
 
-def git_clone(name, url, tag, recursive=False):
+def git_clone(name, url, commit, recursive=False):
     path = Path(package_name, name)
 
     if not path.is_dir():
@@ -73,7 +73,7 @@ def git_clone(name, url, tag, recursive=False):
 
         subprocess.run(command)
 
-    subprocess.run(["git", "-C", str(path), "checkout", tag])
+    subprocess.run(["git", "-C", str(path), "checkout", commit])
 
 
 def cmake_build(directory, configure_args=[]):
@@ -108,9 +108,10 @@ def copy_libraries(lib_path, libraries):
         shutil.copy(lib_path / library, package_lib_path / library)
 
 
-def copy_license(license_path):
-    package_path = Path(os.pardir, "packages", package_name)
-    shutil.copy(license_path, package_path / "LICENSE.txt")
+def copy_license(license_path, name="license"):
+    licenses_path = Path(os.pardir, "packages", package_name) / "licenses"
+    licenses_path.mkdir(exist_ok=True)
+    shutil.copy(license_path, licenses_path / f"{name}.txt")
 
 
 def generate_bindings(include_path, mod_name):
@@ -122,10 +123,10 @@ def generate_bindings(include_path, mod_name):
         "--generator", generator_path,
     ]
 
-    if type(include_path) is str:
-        command.append(f"-I{include_path}")
-    elif type(include_path) is list:
+    if type(include_path) is list:
         command.extend(f"-I{path}" for path in include_path)
+    else:
+        command.append(f"-I{include_path}")
 
     subprocess.run(command)
 
