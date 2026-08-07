@@ -11,6 +11,7 @@ on:
           - glfw
           - sdl
           - vulkan
+          - joltc
 
 jobs:
   build-windows:
