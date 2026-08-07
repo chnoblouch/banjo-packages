@@ -1,12 +1,5 @@
-/packages/glfw/lib/
-/packages/glfw/src/
-/packages/vulkan/lib/
-/packages/vulkan/src/
-/packages/sdl/lib/
-/packages/sdl/src/
-/packages/sdl/LICENSE.txt
-/packages/joltc/lib/
-/packages/joltc/src/
-/packages/joltc/licenses/
+/packages/*/lib/
+/packages/*/src/
+/packages/*/licenses
 
 __pycache__/

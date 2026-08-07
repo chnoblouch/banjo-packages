@@ -6,6 +6,8 @@ def filter_symbol(sym):
 
 
 def rename_symbol(sym):
+    c_name = sym.name
+
     if sym.name.startswith("SDL_"):
         sym.name = sym.name[4:]
     
@@ -25,10 +27,16 @@ def rename_symbol(sym):
             sym.name = sym.name[4:]
 
     if sym.kind == "func":
-        sym.name = utils.to_snake_case(sym.name)
+        if c_name[4].islower():
+            sym.name = "stdinc_" + utils.to_snake_case(sym.name)
+        else:
+            sym.name = utils.to_snake_case(sym.name)
     elif sym.kind == "enum":
         prefix = utils.common_prefix_len([variant.name for variant in sym.variants])
         
+        if c_name == "SDL_GPUFrontFace":
+            prefix -= 1
+
         for variant in sym.variants:
             variant.name = variant.name[prefix:]
     
