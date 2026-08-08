@@ -18,7 +18,7 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ilammy/msvc-dev-cmd@v1
 
       - name: Install LLVM
@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Update package lists
         run: sudo apt-get update
@@ -93,7 +93,7 @@ jobs:
     runs-on: macos-14
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v5
         with:
@@ -124,8 +124,8 @@ jobs:
           name: "${{ inputs.package }}-aarch64-macos"
           path: ./packages/${{ inputs.package }}
 
-  merge:
-    runs-on: ubuntu-24.04
+  upload:
+    runs-on: ubuntu-24.04-arm
 
     needs:
       - build-windows
@@ -133,18 +133,36 @@ jobs:
       - build-macos
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+
+      - name: Install s3cmd
+        run: sudo apt-get update && sudo apt-get install s3cmd -y
 
       - name: Download builds
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: ./packages
       
       - name: Merge packages
         run: python ./merge_target_variants.py ${{ inputs.package }}
 
-      - name: Upload merged package
-        uses: actions/upload-artifact@v4
+      - name: Create archive
+        run: zip -r "./${{ inputs.package }}.zip" "./${{ inputs.package }}"
+        working-directory: ./packages
+
+      - name: Upload package to S3
+        run: |
+          s3cmd \
+            --access_key="${{ secrets.S3_ACCESS_KEY }}" \
+            --secret_key="${{ secrets.S3_SECRET_KEY }}" \
+            --host="${{ secrets.S3_HOST }}" \
+            --host-bucket="${{ secrets.S3_HOST_BUCKET }}" \
+            put \
+            "./packages/${{ inputs.package }}.zip" \
+            "${{ secrets.S3_UPLOAD_BASE_URL }}/${{ inputs.package }}.zip"
+
+      - name: Upload package to GitHub
+        uses: actions/upload-artifact@v7
         with:
           name: "${{ inputs.package }}"
           path: ./packages/${{ inputs.package }}
