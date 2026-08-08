@@ -6,38 +6,39 @@ def filter_symbol(sym):
 
 
 def rename_symbol(sym):
-    c_name = sym.name
+    name = sym.name
 
-    if sym.name.startswith("SDL_"):
-        sym.name = sym.name[4:]
+    if name.startswith("SDL_"):
+        name = sym.name[4:]
     
-    if sym.name.startswith("IMG_"):
+    if name.startswith("IMG_"):
         if sym.kind == "func":
-            sym.name = "img_" + sym.name[4:]
+            name = "img_" + name[4:]
         elif sym.kind in ("struct", "union", "enum"):
-            sym.name = "IMG" + sym.name[4:]
+            name = "IMG" + name[4:]
         elif sym.kind != "const":
-            sym.name = sym.name[4:]
-    if sym.name.startswith("TTF_"):
+            name = name[4:]
+    if name.startswith("TTF_"):
         if sym.kind == "func":
-            sym.name = "ttf_" + sym.name[4:]
+            name = "ttf_" + name[4:]
         elif sym.kind in ("struct", "union", "enum"):
-            sym.name = "TTF" + sym.name[4:]
+            name = "TTF" + name[4:]
         elif sym.kind != "const":
-            sym.name = sym.name[4:]
+            name = name[4:]
 
     if sym.kind == "func":
-        if c_name[4].islower():
-            sym.name = "stdinc_" + utils.to_snake_case(sym.name)
+        if name[0].islower():
+            return "stdinc_" + utils.to_snake_case(name)
         else:
-            sym.name = utils.to_snake_case(sym.name)
-    elif sym.kind == "enum":
-        prefix = utils.common_prefix_len([variant.name for variant in sym.variants])
+            return utils.to_snake_case(name)
+    elif sym.kind == "param":
+        return utils.to_snake_case(name)
+    elif sym.kind == "enum_variant":
+        prefix = sym.enum_common_prefix_len
         
-        if c_name == "SDL_GPUFrontFace":
+        while sym.name[prefix - 1] != "_":
             prefix -= 1
 
-        for variant in sym.variants:
-            variant.name = variant.name[prefix:]
-    
-    sym.name = sym.name.replace("__", "_")
+        return sym.name[prefix:]
+    else:
+        return name

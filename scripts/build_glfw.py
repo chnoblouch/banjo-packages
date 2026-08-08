@@ -17,3 +17,4 @@ if __name__ == "__main__":
     building.copy_libraries(install_path / "lib", [library_name])
     
     building.generate_bindings(install_path / "include", "glfw")
+    building.copy_license(building.get_path("glfw/LICENSE.md"))

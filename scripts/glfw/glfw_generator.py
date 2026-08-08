@@ -12,17 +12,18 @@ def filter_symbol(sym):
         return sym.name.startswith("GLFW_")
     elif sym.kind == "struct":
         return sym.name.startswith("GLFW")
-
-    return False
+    else:
+        return False
 
 
 def rename_symbol(sym):
     if sym.kind == "func":
-        sym.name = sym.name[4:]
+        return utils.to_snake_case(sym.name[4:])
     elif sym.kind == "const":
-        sym.name = sym.name[5:]
+        return sym.name[5:]
     elif sym.kind == "struct":
-        sym.name = sym.name[4].upper() + sym.name[5:]
-
-        for field in sym.fields:
-            field.name = utils.to_snake_case(field.name)
+        return sym.name[4].upper() + sym.name[5:]
+    elif sym.kind in ("param", "field"):
+        return utils.to_snake_case(sym.name)
+    else:
+        return None
