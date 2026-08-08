@@ -105,7 +105,10 @@ def copy_libraries(lib_path, libraries):
     package_lib_path.mkdir(parents=True, exist_ok=True) 
 
     for library in libraries:
-        shutil.copy(lib_path / library, package_lib_path / library)
+        if type(library) == str:
+            shutil.copy(lib_path / library, package_lib_path / library)
+        elif type(library) == (str, str):
+            shutil.copy(lib_path / library[0], package_lib_path / library[1])
 
 
 def copy_license(license_path, name="license"):
