@@ -1,19 +1,19 @@
 {
 	"targets": {
         "x86_64-windows-msvc": {
-            "libraries": ["vulkan-1"]
+            "libraries": ["Jolt", "joltc"]
         },
         "x86_64-windows-gnu": {
-            "libraries": ["vulkan-1"]
+            "libraries": ["Jolt", "joltc"]
         },
         "x86_64-linux-gnu": {
-            "libraries": ["vulkan"]
+            "libraries": ["Jolt", "joltc"]
         },
         "aarch64-linux-gnu": {
-            "libraries": ["vulkan"]
+            "libraries": ["Jolt", "joltc"]
         },
         "aarch64-macos": {
-            "libraries": ["vulkan"]
+            "libraries": ["Jolt", "joltc"]
         }
     }
 }

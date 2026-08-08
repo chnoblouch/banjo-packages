@@ -1,8 +1,19 @@
 {
-    "libraries": ["glfw3"],
 	"targets": {
 		"x86_64-windows-msvc": {
-			"libraries": ["user32", "gdi32", "shell32"]
+			"libraries": ["glfw3", "user32", "gdi32", "shell32"]
+		},
+		"x86_64-windows-gnu": {
+			"libraries": ["glfw3", "user32", "gdi32", "shell32"]
+		},
+		"x86_64-linux-gnu": {
+			"libraries": ["glfw3"]
+		},
+		"aarch64-linux-gnu": {
+			"libraries": ["glfw3"]
+		},
+		"aarch64-macos": {
+			"libraries": ["glfw3"]
 		}
 	}
 }
