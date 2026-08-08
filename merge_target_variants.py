@@ -6,6 +6,7 @@ import shutil
 TARGETS = [
     ("x86_64-windows-msvc", "X86_64", "WINDOWS"),
     ("x86_64-linux-gnu", "X86_64", "LINUX"),
+    ("aarch64-linux-gnu", "AARCH64", "LINUX"),
     ("aarch64-macos", "AARCH64", "MACOS"),
 ]
 

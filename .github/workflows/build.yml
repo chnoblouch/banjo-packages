@@ -27,9 +27,6 @@ jobs:
       - name: Install Ninja
         run: choco install ninja
 
-      - name: Install libclang
-        run: pip install libclang
-
       - name: Install NASM
         run: choco install nasm
 
@@ -53,7 +50,16 @@ jobs:
           path: .\packages\${{ inputs.package }}
 
   build-linux:
-    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
+        include:
+          - arch: x86_64
+            runner: ubuntu-24.04
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+
+    runs-on: ${{ matrix.runner }}
 
     steps:
       - uses: actions/checkout@v7
@@ -67,17 +73,14 @@ jobs:
       - name: Install build dependencies
         run: sudo apt-get install -y xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols extra-cmake-modules
 
-      - name: Install libclang
-        run: pip3 install libclang
-
       - name: Download Banjo toolchain
-        run: curl -OL https://github.com/chnoblouch/banjo-lang/releases/latest/download/banjo-x86_64-linux.zip
+        run: curl -OL https://github.com/chnoblouch/banjo-lang/releases/latest/download/banjo-${{ matrix.arch }}-linux.zip
 
       - name: Extract Banjo toolchain
-        run: unzip banjo-x86_64-linux.zip -d $HOME
+        run: unzip banjo-${{ matrix.arch }}-linux.zip -d $HOME
       
       - name: Add Banjo toolchain to PATH
-        run: echo "$HOME/banjo-x86_64-linux/bin" >> $GITHUB_PATH
+        run: echo "$HOME/banjo-${{ matrix.arch }}-linux/bin" >> $GITHUB_PATH
 
       - name: Build package
         run: python build_${{ inputs.package }}.py
@@ -86,7 +89,7 @@ jobs:
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
-          name: "${{ inputs.package }}-x86_64-linux-gnu"
+          name: "${{ inputs.package }}-${{ matrix.arch }}-linux-gnu"
           path: ./packages/${{ inputs.package }}
 
   build-macos:
@@ -95,15 +98,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: 3.13
 
       - name: Install Ninja
         run: brew install ninja
-
-      - name: Install libclang
-        run: pip install libclang
 
       - name: Download Banjo toolchain
         run: curl -OL https://github.com/chnoblouch/banjo-lang/releases/latest/download/banjo-aarch64-macos.zip
