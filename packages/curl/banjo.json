@@ -1,0 +1,55 @@
+{
+	"targets": {
+		"x86_64-windows-msvc": {
+			"libraries": [
+				"curl",
+				"ssl",
+				"crypto",
+				"zlib",
+				"zstd"
+			]
+		},
+		"x86_64-windows-gnu": {
+			"libraries": [
+				"curl",
+				"ssl",
+				"crypto",
+				"zlib",
+				"zstd"
+			]
+		},
+		"x86_64-linux-gnu": {
+			"libraries": [
+				"curl",
+				"ssl",
+				"crypto",
+				"z",
+				"zstd"
+			]
+		},
+		"aarch64-linux-gnu": {
+			"libraries": [
+				"curl",
+				"ssl",
+				"crypto",
+				"z",
+				"zstd"
+			]
+		},
+		"aarch64-macos": {
+			"libraries": [
+				"curl",
+				"ssl",
+				"crypto",
+				"z",
+				"zstd"
+			],
+			"macos.frameworks": [
+				"SystemConfiguration",
+				"Security",
+				"CoreFoundation",
+				"CoreServices"
+			]
+		}
+	}
+}

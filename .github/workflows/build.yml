@@ -12,6 +12,7 @@ on:
           - sdl
           - vulkan
           - joltc
+          - curl
 
 jobs:
   build-windows:

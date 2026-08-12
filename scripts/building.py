@@ -55,11 +55,11 @@ def is_macos():
 
 
 def get_path(directory):
-    return Path(package_name, directory)
+    return Path(package_name, directory).absolute()
 
 
 def get_package_path():
-    return Path(os.pardir, "packages", package_name)
+    return Path(os.pardir, "packages", package_name).absolute()
 
 
 def git_clone(name, url, commit, recursive=False):
@@ -73,7 +73,7 @@ def git_clone(name, url, commit, recursive=False):
 
         subprocess.run(command)
 
-    subprocess.run(["git", "-C", str(path), "checkout", commit])
+    subprocess.run(["git", "-C", str(path), "checkout", "-f", commit])
 
 
 def cmake_build(directory, configure_args=[]):
@@ -86,6 +86,8 @@ def cmake_build(directory, configure_args=[]):
         f"-B{build_path}",
         f"-GNinja",
         f"-DCMAKE_INSTALL_PREFIX={install_path}",
+        "-DCMAKE_INSTALL_LIBDIR=lib",
+        "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
         *configure_args,
     ])
 
