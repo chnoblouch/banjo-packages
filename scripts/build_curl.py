@@ -50,6 +50,7 @@ if __name__ == "__main__":
         "perl",
         "./Configure",
         f"--prefix={openssl_install_path}",
+        "--libdir=lib",
         "no-shared",
     ]
 
