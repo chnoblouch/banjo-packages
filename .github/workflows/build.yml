@@ -29,7 +29,9 @@ jobs:
         run: choco install ninja
 
       - name: Install NASM
-        run: choco install nasm
+        run: |
+          choco install nasm
+          echo "C:\Program Files\NASM" | Out-File -FilePath $ENV:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Download Banjo toolchain
         run: Invoke-WebRequest -OutFile banjo-x86_64-windows.zip https://github.com/chnoblouch/banjo-lang/releases/latest/download/banjo-x86_64-windows.zip
