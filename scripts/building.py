@@ -38,7 +38,7 @@ def target_string(target=host_target()):
     string = f"{arch}-{os}"
     if env:
         string += f"-{env}"
-    
+
     return string
 
 
@@ -81,6 +81,15 @@ def cmake_build(directory, configure_args=[]):
     build_path = Path(path, "build", target_string())
     install_path = Path(path, "install", target_string())
 
+    if is_windows():
+        # Target Windows release: Windows 10 1809 "Redstone 5"
+        flags = "/DNTDDI_VERSION=0x0A000006 /D_WIN32_WINNT_WIN10=0x0A00"
+
+        configure_args.extend([
+            f"-DCMAKE_C_FLAGS={flags}",
+            f"-DCMAKE_CXX_FLAGS={flags}",
+        ])
+
     subprocess.run([
         "cmake", str(path),
         f"-B{build_path}",
@@ -105,7 +114,7 @@ def copy_libraries(lib_path, libraries):
     _, target_os, _ = host_target()
 
     package_lib_path = Path(os.pardir, "packages", package_name, "lib", target_string())
-    package_lib_path.mkdir(parents=True, exist_ok=True) 
+    package_lib_path.mkdir(parents=True, exist_ok=True)
 
     for library in libraries:
         if type(library) == str:
