@@ -6,7 +6,12 @@
 				"ssl",
 				"crypto",
 				"zlib",
-				"zstd"
+				"zstd",
+				"ws2_32",
+				"bcrypt",
+				"crypt32",
+				"iphlpapi",
+				"advapi32"
 			]
 		},
 		"x86_64-windows-gnu": {
@@ -15,7 +20,12 @@
 				"ssl",
 				"crypto",
 				"zlib",
-				"zstd"
+				"zstd",
+				"ws2_32",
+				"bcrypt",
+				"crypt32",
+				"iphlpapi",
+				"advapi32"
 			]
 		},
 		"x86_64-linux-gnu": {

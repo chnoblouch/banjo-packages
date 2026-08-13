@@ -88,6 +88,7 @@ def cmake_build(directory, configure_args=[]):
         f"-DCMAKE_INSTALL_PREFIX={install_path}",
         "-DCMAKE_INSTALL_LIBDIR=lib",
         "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
+        "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
         *configure_args,
     ])
 

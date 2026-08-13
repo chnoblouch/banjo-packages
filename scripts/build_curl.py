@@ -54,19 +54,27 @@ if __name__ == "__main__":
     ]
 
     subprocess.run(command, cwd=openssl_path)
-    subprocess.run(["make", "install"], cwd=openssl_path)
+
+    openssl_make_tool = "nmake" if building.is_windows() else "make"
+    subprocess.run([openssl_make_tool, "install"], cwd=openssl_path)
 
     zlib_install_path = building.cmake_build("zlib", [])
     zstd_install_path = building.cmake_build("zstd/build/cmake", [])
 
+    ssl_library_name = "libssl.lib" if building.is_windows() else "libssl.a"
+    crypto_library_name = "libcrypto.lib" if building.is_windows() else "libcrypto.a"
+    zlib_library_name = "z.lib" if building.is_windows() else "libz.a"
+    zstd_library_name = "zstd.lib" if building.is_windows() else "libzstd.a"
+
     cmake_args = [
         "-DCURL_USE_PKGCONFIG=OFF",
         "-DBUILD_STATIC_LIBS=ON",
+        "-DCURL_USE_OPENSSL=ON",
         f"-DOPENSSL_ROOT_DIR={openssl_install_path}",
         f"-DZLIB_INCLUDE_DIR={zlib_install_path}/include",
-        f"-DZLIB_LIBRARY={zlib_install_path}/lib/libz.a",
+        f"-DZLIB_LIBRARY={zlib_install_path}/lib/{zlib_library_name}",
         f"-DZSTD_INCLUDE_DIR={zstd_install_path}/include",
-        f"-DZSTD_LIBRARY={zstd_install_path}/lib/libzstd.a",
+        f"-DZSTD_LIBRARY={zstd_install_path}/lib/{zstd_library_name}",
         "-DUSE_LIBIDN2=OFF",
         "-DUSE_NGHTTP2=OFF",
         "-DCURL_USE_LIBPSL=OFF",
@@ -75,14 +83,9 @@ if __name__ == "__main__":
     ]
 
     install_path = building.cmake_build("curl", cmake_args)
+    library_name = "libcurl.lib" if building.is_windows() else "libcurl.a"
 
-    ssl_library_name = "ssl.lib" if building.is_windows() else "libssl.a"
-    crypto_library_name = "crypto.lib" if building.is_windows() else "libcrypto.a"
-    curl_library_name = "curl.lib" if building.is_windows() else "libcurl.a"
-    zlib_library_name = "libz.lib" if building.is_windows() else "libz.a"
-    zstd_library_name = "zstd.lib" if building.is_windows() else "libzstd.a"
-
-    building.copy_libraries(install_path / "lib", [curl_library_name])
+    building.copy_libraries(install_path / "lib", [library_name])
     building.copy_libraries(openssl_install_path / "lib", [ssl_library_name, crypto_library_name])
     building.copy_libraries(zlib_install_path / "lib", [zlib_library_name])
     building.copy_libraries(zstd_install_path / "lib", [zstd_library_name])
