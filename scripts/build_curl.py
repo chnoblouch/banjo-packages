@@ -79,6 +79,7 @@ if __name__ == "__main__":
         "-DUSE_LIBIDN2=OFF",
         "-DUSE_NGHTTP2=OFF",
         "-DCURL_USE_LIBPSL=OFF",
+        "-DCURL_USE_LIBSSH2=OFF",
         "-DCURL_BROTLI=OFF",
         "-DCURL_DISABLE_LDAP=ON",
     ]

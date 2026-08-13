@@ -2,10 +2,10 @@
 	"targets": {
 		"x86_64-windows-msvc": {
 			"libraries": [
-				"curl",
-				"ssl",
-				"crypto",
-				"zlib",
+				"libcurl",
+				"libssl",
+				"libcrypto",
+				"z",
 				"zstd",
 				"ws2_32",
 				"bcrypt",
@@ -16,10 +16,10 @@
 		},
 		"x86_64-windows-gnu": {
 			"libraries": [
-				"curl",
-				"ssl",
-				"crypto",
-				"zlib",
+				"libcurl",
+				"libssl",
+				"libcrypto",
+				"z",
 				"zstd",
 				"ws2_32",
 				"bcrypt",
