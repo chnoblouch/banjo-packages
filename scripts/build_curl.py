@@ -64,8 +64,8 @@ if __name__ == "__main__":
 
     ssl_library_name = "libssl.lib" if building.is_windows() else "libssl.a"
     crypto_library_name = "libcrypto.lib" if building.is_windows() else "libcrypto.a"
-    zlib_library_name = "z.lib" if building.is_windows() else "libz.a"
-    zstd_library_name = "zstd.lib" if building.is_windows() else "libzstd.a"
+    zlib_library_name = "zs.lib" if building.is_windows() else "libz.a"
+    zstd_library_name = "zstd_static.lib" if building.is_windows() else "libzstd.a"
 
     cmake_args = [
         "-DCURL_USE_PKGCONFIG=OFF",
