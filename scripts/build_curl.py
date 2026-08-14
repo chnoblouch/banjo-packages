@@ -53,7 +53,7 @@ if __name__ == "__main__":
     zstd_library_name = "zstd_static.lib" if building.is_windows() else "libzstd.a"
     brotlicommon_library_name = "brotlicommon-static.lib" if building.is_windows() else "libbrotlicommon-static.a"
     brotlidec_library_name = "brotlidec-static.lib" if building.is_windows() else "libbrotlidec-static.a"
-    libssh2_library_name = "libssh2.lib" if building.is_windows() else "libssh2.a"
+    libssh2_library_name = "libssh2_static.lib" if building.is_windows() else "libssh2.a"
 
     openssl_path = building.get_path("openssl")
     openssl_install_path = openssl_path / "install" / building.target_string()
