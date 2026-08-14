@@ -2,4 +2,5 @@ curl/
 openssl/
 zlib/
 zstd/
+brotli/
 libssh2/
