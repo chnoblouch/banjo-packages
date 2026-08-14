@@ -2,3 +2,4 @@ curl/
 openssl/
 zlib/
 zstd/
+libssh2/

@@ -5,6 +5,7 @@ GIT_TAG = "curl-8_21_0"
 OPENSSL_GIT_TAG = "openssl-3.6.3"
 ZLIB_GIT_TAG = "v1.3.2"
 ZSTD_GIT_TAG = "v1.5.7"
+LIBSSH2_GIT_TAG = "libssh2-1.11.1"
 
 SETOPT_PATCH = """
 CURLcode curl_easy_setopt_l(CURL *handle, CURLoption option, long long parameter) {
@@ -30,8 +31,9 @@ if __name__ == "__main__":
 
     building.git_clone("curl", "https://github.com/curl/curl.git", GIT_TAG)
     building.git_clone("openssl", "https://github.com/openssl/openssl.git", OPENSSL_GIT_TAG)
-    building.git_clone("zlib", "https://github.com/madler/zlib", ZLIB_GIT_TAG)
-    building.git_clone("zstd", "https://github.com/facebook/zstd", ZSTD_GIT_TAG)
+    building.git_clone("zlib", "https://github.com/madler/zlib.git", ZLIB_GIT_TAG)
+    building.git_clone("zstd", "https://github.com/facebook/zstd.git", ZSTD_GIT_TAG)
+    building.git_clone("libssh2", "https://github.com/libssh2/libssh2.git", LIBSSH2_GIT_TAG)
 
     with open(building.get_path("curl/lib/setopt.c"), "r+") as f:
         content = f.read()
@@ -42,6 +44,12 @@ if __name__ == "__main__":
             f.seek(0)
             f.write(content)
             f.truncate()
+
+    ssl_library_name = "libssl.lib" if building.is_windows() else "libssl.a"
+    crypto_library_name = "libcrypto.lib" if building.is_windows() else "libcrypto.a"
+    zlib_library_name = "zs.lib" if building.is_windows() else "libz.a"
+    zstd_library_name = "zstd_static.lib" if building.is_windows() else "libzstd.a"
+    libssh2_library_name = "libssh2.lib" if building.is_windows() else "libssh2.a"
 
     openssl_path = building.get_path("openssl")
     openssl_install_path = openssl_path / "install" / building.target_string()
@@ -62,10 +70,14 @@ if __name__ == "__main__":
     zlib_install_path = building.cmake_build("zlib", [])
     zstd_install_path = building.cmake_build("zstd/build/cmake", [])
 
-    ssl_library_name = "libssl.lib" if building.is_windows() else "libssl.a"
-    crypto_library_name = "libcrypto.lib" if building.is_windows() else "libcrypto.a"
-    zlib_library_name = "zs.lib" if building.is_windows() else "libz.a"
-    zstd_library_name = "zstd_static.lib" if building.is_windows() else "libzstd.a"
+    configure_args = [
+        "-DCRYPTO_BACKEND=OpenSSL",
+        f"-DOPENSSL_ROOT_DIR={openssl_install_path}",
+        f"-DZLIB_INCLUDE_DIR={zlib_install_path}/include",
+        f"-DZLIB_LIBRARY={zlib_install_path}/lib/{zlib_library_name}",
+    ]
+
+    libssh2_install_path = building.cmake_build("libssh2", configure_args)
 
     cmake_args = [
         "-DCURL_USE_PKGCONFIG=OFF",
@@ -76,10 +88,11 @@ if __name__ == "__main__":
         f"-DZLIB_LIBRARY={zlib_install_path}/lib/{zlib_library_name}",
         f"-DZSTD_INCLUDE_DIR={zstd_install_path}/include",
         f"-DZSTD_LIBRARY={zstd_install_path}/lib/{zstd_library_name}",
+        f"-DLIBSSH2_LIBRARY={libssh2_install_path}/lib/{libssh2_library_name}",
+        f"-DLIBSSH2_INCLUDE_DIR={libssh2_install_path}/include",
         "-DUSE_LIBIDN2=OFF",
         "-DUSE_NGHTTP2=OFF",
         "-DCURL_USE_LIBPSL=OFF",
-        "-DCURL_USE_LIBSSH2=OFF",
         "-DCURL_BROTLI=OFF",
         "-DCURL_DISABLE_LDAP=ON",
     ]
@@ -91,6 +104,7 @@ if __name__ == "__main__":
     building.copy_libraries(openssl_install_path / "lib", [ssl_library_name, crypto_library_name])
     building.copy_libraries(zlib_install_path / "lib", [zlib_library_name])
     building.copy_libraries(zstd_install_path / "lib", [zstd_library_name])
+    building.copy_libraries(libssh2_install_path / "lib", [libssh2_library_name])
 
     building.generate_bindings(install_path / "include", "curl")
 
@@ -98,3 +112,4 @@ if __name__ == "__main__":
     building.copy_license(building.get_path("openssl/LICENSE.txt"), "openssl")
     building.copy_license(building.get_path("zlib/LICENSE"), "zlib")
     building.copy_license(building.get_path("zstd/LICENSE"), "zstd")
+    building.copy_license(building.get_path("libssh2/COPYING"), "libssh2")

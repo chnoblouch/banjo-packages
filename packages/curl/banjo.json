@@ -7,6 +7,7 @@
 				"libcrypto",
 				"zs",
 				"zstd_static",
+				"libssh2",
 				"ws2_32",
 				"bcrypt",
 				"crypt32",
@@ -21,6 +22,7 @@
 				"libcrypto",
 				"zs",
 				"zstd_static",
+				"libssh2",
 				"ws2_32",
 				"bcrypt",
 				"crypt32",
@@ -34,7 +36,8 @@
 				"ssl",
 				"crypto",
 				"z",
-				"zstd"
+				"zstd",
+				"ssh2"
 			]
 		},
 		"aarch64-linux-gnu": {
@@ -43,7 +46,8 @@
 				"ssl",
 				"crypto",
 				"z",
-				"zstd"
+				"zstd",
+				"ssh2"
 			]
 		},
 		"aarch64-macos": {
@@ -52,7 +56,8 @@
 				"ssl",
 				"crypto",
 				"z",
-				"zstd"
+				"zstd",
+				"ssh2"
 			],
 			"macos.frameworks": [
 				"SystemConfiguration",
